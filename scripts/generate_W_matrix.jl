@@ -1,6 +1,5 @@
 using CSV, Tables
 
-# SET VALUES
 D = 5 #Number of locations
 output_folder = "data"
 
