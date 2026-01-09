@@ -1,4 +1,4 @@
-function run_simulation(Tmax, transmission_params, W, states_at_t0, population)
+function run_simulation!(Tmax, α, β, γ, W, states_at_t0, population)
     
     D = size(W)[1]
 
@@ -11,10 +11,10 @@ function run_simulation(Tmax, transmission_params, W, states_at_t0, population)
     col_names = [:S, :E, :I, :R, :source, :dest]
     Δ = DataFrame(; (col => Vector{Int32}(undef, number_of_movements) for col in col_names)...)
 
-    #FOR TIME t loop
     for t in 1:(Tmax-1)
         perform_migration_step!(t, States, Source, Destination, Wij, Δ, D)
-        perform_infection_step!(t, States, transmission_params, population, D)
+        perform_infection_step!(t, States, α, β, γ, population, D)
     end
     
+    return States
 end

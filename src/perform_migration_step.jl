@@ -36,18 +36,22 @@ function perform_migration_step!(t, States, Source, Destination, Wij, Δ, D)
         end
     end
 
-    for i in 1:D 
-        state_for_loc_i = view(States, i, :, t)
-        for record_ct in 1:nrow(Δ)
-            if Δ.source[record_ct] == i
-                state_for_loc_i .-= collect(Δ[record_ct, S:R])
-            elseif Δ.dest[record_ct] == i
-                state_for_loc_i .+= collect(Δ[record_ct, S:R])
+    Δmat = Matrix(Δ[:, S:R])
+    src  = Vector{Int}(Δ.source)
+    dst  = Vector{Int}(Δ.dest)
+
+    @views for i in 1:D
+        cur  = view(States, i, :, t)
+        nxt  = view(States, i, :, t+1)
+
+        nxt .= cur
+
+        for r in 1:nrow(Δ)
+            if src[r] == i
+                nxt .-= Δmat[r, :]
+            elseif dst[r] == i
+                nxt .+= Δmat[r, :]
             end
         end
-        States[i, :, t+1] = state_for_loc_i
     end
-
-    print("Updated state for time $t + 1")
-
 end
