@@ -2,10 +2,10 @@
 
 julia_version = "1.12.4"
 manifest_format = "2.0"
-project_hash = "6dd4e733488cbadbe4d509789a0e90ce56865bab"
+project_hash = "a700da9c054e47e4608372d4705db7fc110b146d"
 
 [[deps.ASF_TN_SEIR]]
-deps = ["CSV", "DataFrames", "DelimitedFiles", "Distributions", "Revise", "Tables"]
+deps = ["CSV", "DataFrames", "DelimitedFiles", "Distributions", "Random", "Revise", "SparseArrays", "Tables"]
 path = "."
 uuid = "11111111-2222-3333-4444-555555555555"
 version = "0.0.0"
