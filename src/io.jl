@@ -1,3 +1,4 @@
+
 function read_matrix(data_folder::AbstractString,  file_name::AbstractString)
     path = joinpath(@__DIR__, "..", data_folder, file_name)
     df = CSV.read(path, DataFrame, header=false)
@@ -23,4 +24,9 @@ function read_sparse_matrix(data_folder::AbstractString,  file_name::AbstractStr
         i += 1
     end
     return sparse(I_loc, J_loc, V)
+end
+
+function read_vector(data_folder::AbstractString,  file_name::AbstractString)
+    path = joinpath(@__DIR__, "..", data_folder, file_name)
+    return vec(readdlm(path, ',', Int32))
 end

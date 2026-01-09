@@ -7,13 +7,13 @@ function perform_migration_step!(t, States, Source, Destination, Wij, Δ, D)
         destinations_from_loc_i = Destination[is_departing_from_loc_i]
         number_departing_from_loc_i = Wij[is_departing_from_loc_i]
         number_departing_dict = Dict(destinations_from_loc_i .=> number_departing_from_loc_i)
-        current_state_for_loc_i = States[i, :, t]
+        state_for_loc_i = view(States, i, :, t)
 
         X = vcat(
-            fill(S, current_state_for_loc_i[S]),
-            fill(E, current_state_for_loc_i[E]),
-            fill(I, current_state_for_loc_i[I]),
-            fill(R, current_state_for_loc_i[R])
+            fill(S, state_for_loc_i[S]),
+            fill(E, state_for_loc_i[E]),
+            fill(I, state_for_loc_i[I]),
+            fill(R, state_for_loc_i[R])
             )
 
         for j in destinations_from_loc_i
@@ -37,15 +37,15 @@ function perform_migration_step!(t, States, Source, Destination, Wij, Δ, D)
     end
 
     for i in 1:D 
-        state = States[i, :, t]
+        state_for_loc_i = view(States, i, :, t)
         for record_ct in 1:nrow(Δ)
             if Δ.source[record_ct] == i
-                state .-= collect(Δ[record_ct, S:R])
+                state_for_loc_i .-= collect(Δ[record_ct, S:R])
             elseif Δ.dest[record_ct] == i
-                state .+= collect(Δ[record_ct, S:R])
+                state_for_loc_i .+= collect(Δ[record_ct, S:R])
             end
         end
-        States[i, :, t+1] = state
+        States[i, :, t+1] = state_for_loc_i
     end
 
     print("Updated state for time $t + 1")
