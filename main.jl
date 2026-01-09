@@ -1,7 +1,7 @@
 using Revise
 using ASF_TN_SEIR
-using StatsBase
 using DataFrames
+# WRITE CODE TO LOAD PROJECT?
 
 #Set file locations
 data_folder = "data"
@@ -24,56 +24,10 @@ Destination, Source, Wij = findnz(W)
 number_of_movements = length(Wij)
 col_names = [:S, :E, :I, :R, :source, :dest]
 Δ = DataFrame(; (col => Vector{Int32}(undef, number_of_movements) for col in col_names)...)
-Δ_ct = 1
+t = 1
+perform_migration_step!(t, States, Source, Destination, Wij, Δ, D)
 
-for i in 1:D # DO FOR EVERY LOCATION
-    t = 1
-    is_departing_from_loc_i = Source .== i
-    destinations_from_loc_i = Destination[is_departing_from_loc_i]
-    number_departing_from_loc_i = Wij[is_departing_from_loc_i]
-    number_departing_dict = Dict(destinations_from_loc_i .=> number_departing_from_loc_i)
 
-    X = vcat(
-        fill(S, current_state_for_loc_i[S]),
-        fill(E, current_state_for_loc_i[E]),
-        fill(I, current_state_for_loc_i[I]),
-        fill(R, current_state_for_loc_i[R])
-        )
 
-    for j in destinations_from_loc_i
-        #Sample without replacement
-        Δij = zeros(UInt8, 4)
 
-        idx = sample(1:length(X), number_departing_dict[j]; replace=false)
-        idx
-        x = X[idx]
-        deleteat!(X, sort!(idx))
-
-        #Count SEIR symbols
-        for xi in x #Add @inbounds once tested
-            Δij[xi] += 1
-        end
-        Δ[Δ_ct, S:R] = Δij
-        Δ[Δ_ct, :source] = i
-        Δ[Δ_ct, :dest] = j
-        Δ_ct += 1
-        println("from source $i to dest $j: $Δij")
-    end
-
-end
-
-for i in 2:2 
-    state = States[i, :, t]
-    for record_ct in 1:nrow(Δ)
-        if Δ.source[record_ct] == i
-            state .-= collect(Δ[record_ct, S:R])
-            j = Δ.dest[record_ct]
-            println("$record_ct: $i to $j, subtracted to state")
-        elseif Δ.dest[record_ct] == i
-            state .+= collect(Δ[record_ct, S:R])
-            j = Δ.dest[record_ct]
-            println("$record_ct: $j to $i, added to state")
-        end
-    end
-end
     
