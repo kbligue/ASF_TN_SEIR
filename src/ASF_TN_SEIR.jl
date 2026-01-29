@@ -4,11 +4,12 @@ using CSV
 using DataFrames
 using DelimitedFiles
 using Distributions
+using Plots
 using SparseArrays
 using StatsBase
 
 export S, E, I, R
-export read_matrix, read_sparse_matrix, read_vector, save_long, save_by_time
+export plot_from_long, read_matrix, read_sparse_matrix, read_vector, save_long, save_by_time
 export perform_migration_step!, perform_migration_step!, run_simulation!
 export findnz
 

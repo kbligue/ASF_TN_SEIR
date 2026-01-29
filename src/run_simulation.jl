@@ -6,13 +6,13 @@ function run_simulation!(Tmax, α, β, γ, W, states_at_t0, population)
     States[:, :, 1] .= states_at_t0
 
     Destination, Source, Wij = findnz(W)
-
+    
     number_of_movements = length(Wij)
     col_names = [:S, :E, :I, :R, :source, :dest]
-    Δ = DataFrame(; (col => Vector{Int32}(undef, number_of_movements) for col in col_names)...)
-
+    Δ = DataFrame(; (col => zeros(Int, number_of_movements) for col in col_names)...)
     for t in 1:(Tmax-1)
         perform_migration_step!(t, States, Source, Destination, Wij, Δ, D)
+        @show Δ
         perform_infection_step!(t, States, α, β, γ, population, D)
     end
     

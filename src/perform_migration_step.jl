@@ -18,7 +18,7 @@ function perform_migration_step!(t, States, Source, Destination, Wij, Δ, D)
 
         for j in destinations_from_loc_i
             #Sample without replacement
-            Δij = zeros(UInt8, 4)
+            Δij = zeros(Int, 4)
 
             idx = sample(1:length(X), number_departing_dict[j]; replace=false)
             x = X[idx]
